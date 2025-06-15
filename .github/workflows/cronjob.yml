@@ -1,0 +1,13 @@
+name: Cronjob a cada 15 minutos
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # A cada 15 minutos
+  workflow_dispatch:  # permite execução manual
+
+jobs:
+  call-vercel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar função da Vercel
+        run: curl -s ${{ secrets.URL_QUOTATION }}
