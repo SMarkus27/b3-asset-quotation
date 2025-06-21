@@ -20,3 +20,9 @@ class AssetsQuotation(db.Model, BaseMixin):
         nullable=False,
         comment="asset price",
     )
+
+    sector: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        comment="sector name",
+    )

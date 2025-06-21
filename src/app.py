@@ -1,6 +1,8 @@
+import json
 
 from apiflask import APIFlask
 from decouple import config
+from sqlalchemy import select
 
 from src.controller import api_v1_blueprint
 from src.core.config.extensions import db
@@ -17,6 +19,23 @@ def create_app(config_name: str):
 
     with (app.app_context()):
         db.create_all()
+
+        with open("../seeds/ticker.txt", "r") as file:
+            for line in file:
+                ticker, price, sector = line.strip().split(",")
+
+                query = select(AssetsQuotation).where(AssetsQuotation.ticker == ticker)
+                exist = db.session.execute(query).scalar_one_or_none()
+
+                if not  exist:
+                    assets = AssetsQuotation(
+                        ticker=ticker,
+                        price=price,
+                        sector=sector
+                    )
+                    db.session.add(assets)
+
+        db.session.commit()
 
     return app
 
