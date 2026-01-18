@@ -57,38 +57,38 @@ jobs:
             cache-from: type=gha
             cache-to: type=gha,mode=max
 
-  deploy:
-    needs: build
-    name: deploy_ec2
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy EC2 via SSH
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          ECR_REGISTRY: ${{ secrets.AWS_ECR }}
-          ECR_REPO: ${{ secrets.AWS_ECR_REPO }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          echo "${{ secrets.INSTANCE_KEY }}" > key.pem
-          chmod 400 key.pem
+    deploy:
+      needs: build
+      name: deploy_ec2
+      runs-on: ubuntu-latest
   
-          ssh -i key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_IP }} << EOF
-            set -e
-  
-            aws ecr get-login-password --region $AWS_REGION \
-            | docker login --username AWS --password-stdin $ECR_REGISTRY
-  
-            docker pull $ECR_REPO:${IMAGE_TAG:0:7}
-  
-            docker stop b3-assets || true
-            docker rm b3-assets || true
-  
-            docker run -d \
-              -p 5000:5000 \
-              --restart unless-stopped \
-              --name b3-assets \
-              $ECR_REPO:${IMAGE_TAG:0:7}
-          EOF
-  
-          rm -f key.pem
+      steps:
+        - name: Deploy EC2 via SSH
+          env:
+            AWS_REGION: ${{ secrets.AWS_REGION }}
+            ECR_REGISTRY: ${{ secrets.AWS_ECR }}
+            ECR_REPO: ${{ secrets.AWS_ECR_REPO }}
+            IMAGE_TAG: ${{ github.sha }}
+          run: |
+            echo "${{ secrets.INSTANCE_KEY }}" > key.pem
+            chmod 400 key.pem
+    
+            ssh -i key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_IP }} << EOF
+              set -e
+    
+              aws ecr get-login-password --region $AWS_REGION \
+              | docker login --username AWS --password-stdin $ECR_REGISTRY
+    
+              docker pull $ECR_REPO:${IMAGE_TAG:0:7}
+    
+              docker stop b3-assets || true
+              docker rm b3-assets || true
+    
+              docker run -d \
+                -p 5000:5000 \
+                --restart unless-stopped \
+                --name b3-assets \
+                $ECR_REPO:${IMAGE_TAG:0:7}
+            EOF
+    
+            rm -f key.pem
