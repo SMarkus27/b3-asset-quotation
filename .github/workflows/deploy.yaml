@@ -36,7 +36,7 @@ jobs:
           uses: docker/metadata-action@v5
           id: meta-ecr
           with:
-            images: ${{AWS_ECR_REPO}}
+            images: ${{secrets.AWS_ECR_REPO}}
             tags: |
               type=sha,format=short
               type=raw,value=dev
@@ -53,4 +53,3 @@ jobs:
             labels: ${{ steps.meta-ecr.outputs.labels }}
             cache-from: type=gha
             cache-to: type=gha,mode=max
-
