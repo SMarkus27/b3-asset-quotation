@@ -61,7 +61,7 @@ jobs:
       needs: build
       name: deploy_ec2
       runs-on: ubuntu-latest
-  
+
       steps:
         - name: Deploy EC2 via SSH
           env:
@@ -79,7 +79,7 @@ jobs:
               aws ecr get-login-password --region $AWS_REGION \
               | docker login --username AWS --password-stdin $ECR_REGISTRY
     
-              docker pull $ECR_REPO:${IMAGE_TAG:0:7}
+              docker pull $ECR_REPO:dev
     
               docker stop b3-assets || true
               docker rm b3-assets || true
@@ -88,7 +88,7 @@ jobs:
                 -p 5000:5000 \
                 --restart unless-stopped \
                 --name b3-assets \
-                $ECR_REPO:${IMAGE_TAG:0:7}
+                $ECR_REPO:dev
             EOF
     
             rm -f key.pem
