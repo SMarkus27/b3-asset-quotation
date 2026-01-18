@@ -3,7 +3,7 @@ name: Pipeline CI/CD
 on:
   push:
     branches:
-      - main
+      - feature/quotation
 
 permissions:
   id-token: write
@@ -34,3 +34,31 @@ jobs:
 
         - name: teste
           run: echo ${{ steps.build.outputs.image-uri }}
+
+#        - name: Build, Tag, and Push
+#          run: |
+#            docker build -t b3-assets:v1.0 .
+#            docker tag b3-assets:v1.0 ${{ AWS_ECR_REPO }}:v1.0
+#            docker push ${{ AWS_ECR_REPO }}:v1.0
+#
+#
+#    deploy:
+#      needs: build
+#      name: deploy_ec2
+#      runs-on: ubuntu:latest
+#      steps:
+#        - name: Deploy EC2 SSH
+#          run: |
+#            echo ${{ secrets.INSTANCE_KEY }} > key.pem
+#            chmod 400 key.pem
+#            ssh -i key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_IP }} << EOF
+#              aws ecr get-login-password --region ${secrets.AWS_REGION} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR}}
+#              docker pull ${{ secrets.AWS_ECR_REPO }}:v1.0
+#
+#              docker stop b3-assets || true
+#              docker rm b3-assets || true
+#
+#              docker run -d -p 5000:5000 --name b3-assets ${{ secrets.AWS_ECR_REPO }}:v1.0
+#
+#            EOF
+#            rm key.pem
