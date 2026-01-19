@@ -88,6 +88,7 @@ jobs:
                 -p 5000:5000 \
                 --restart unless-stopped \
                 --name b3-assets \
+                --env-file /etc/environment
                 $ECR_REPO:dev
             EOF
     

@@ -20,7 +20,8 @@ def create_app(config_name: str):
     with (app.app_context()):
         db.create_all()
 
-        with open("../seeds/ticker.txt", "r") as file:
+
+        with open("seeds/ticker.txt", "r") as file:
             for line in file:
                 ticker, price, sector = line.strip().split(",")
 
