@@ -58,7 +58,7 @@ jobs:
 #            cache-to: type=gha,mode=max
 
     deploy:
-      needs: build
+#      needs: build
       name: deploy_ec2
       runs-on: ubuntu-latest
 
