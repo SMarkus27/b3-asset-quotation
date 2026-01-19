@@ -10,55 +10,55 @@ permissions:
   contents: read
 
 jobs:
-#    build:
-#      name: build_ecr
-#      runs-on: ubuntu-latest
-##      environment: "prod"
-#      outputs:
-#        image-uri: ${{ steps.login-ecr.outputs.registry }}
-#      steps:
-#        - name: Checkout
-#          uses: actions/checkout@v6.0.1
-#
-#        - name: Configure AWS Credentials Action for GitHub Actions
-#          uses: aws-actions/configure-aws-credentials@v5.1.1
-#          with:
-#            role-to-assume: ${{ secrets.AWS_GITHUB_ROLE }}
-#            aws-region: ${{ secrets.AWS_REGION }}
-#
-#        - name: Amazon ECR "Login" Action for GitHub Actions
-#          id: login-ecr
-#          uses: aws-actions/amazon-ecr-login@v2.0.1
-#          with:
-#            region: ${{ secrets.AWS_REGION }}
-#
-#        - name: Extract image metadata
-#          uses: docker/metadata-action@v5
-#          id: meta-ecr
-#          with:
-#            images: ${{secrets.AWS_ECR_REPO}}
-#            tags: |
-#              type=sha,format=short
-#              type=raw,value=dev
-#
-#        - name: teste
-#          run: echo ${{ steps.build.outputs.image-uri }}
-#
-#        - name: Configurar Docker Buildx
-#          uses: docker/setup-buildx-action@v3
-#
-#        - name: Build e push
-#          uses: docker/build-push-action@v5
-#          with:
-#            context: .
-#            push: true
-#            tags: ${{ steps.meta-ecr.outputs.tags }}
-#            labels: ${{ steps.meta-ecr.outputs.labels }}
-#            cache-from: type=gha
-#            cache-to: type=gha,mode=max
+    build:
+      name: build_ecr
+      runs-on: ubuntu-latest
+#      environment: "prod"
+      outputs:
+        image-uri: ${{ steps.login-ecr.outputs.registry }}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v6.0.1
+
+        - name: Configure AWS Credentials Action for GitHub Actions
+          uses: aws-actions/configure-aws-credentials@v5.1.1
+          with:
+            role-to-assume: ${{ secrets.AWS_GITHUB_ROLE }}
+            aws-region: ${{ secrets.AWS_REGION }}
+
+        - name: Amazon ECR "Login" Action for GitHub Actions
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v2.0.1
+          with:
+            region: ${{ secrets.AWS_REGION }}
+
+        - name: Extract image metadata
+          uses: docker/metadata-action@v5
+          id: meta-ecr
+          with:
+            images: ${{secrets.AWS_ECR_REPO}}
+            tags: |
+              type=sha,format=short
+              type=raw,value=dev
+
+        - name: teste
+          run: echo ${{ steps.build.outputs.image-uri }}
+
+        - name: Configurar Docker Buildx
+          uses: docker/setup-buildx-action@v3
+
+        - name: Build e push
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            push: true
+            tags: ${{ steps.meta-ecr.outputs.tags }}
+            labels: ${{ steps.meta-ecr.outputs.labels }}
+            cache-from: type=gha
+            cache-to: type=gha,mode=max
 
     deploy:
-#      needs: build
+      needs: build
       name: deploy_ec2
       runs-on: ubuntu-latest
 
