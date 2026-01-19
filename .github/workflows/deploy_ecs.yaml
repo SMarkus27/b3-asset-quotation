@@ -75,6 +75,8 @@ jobs:
               role-to-assume: ${{ secrets.AWS_GITHUB_ROLE }}
               aws-region: ${{ secrets.AWS_REGION }}
 
+          - name: Debug AWS identity
+            run: aws sts get-caller-identity
           - name: Get current task definition
             id: task
             run: |

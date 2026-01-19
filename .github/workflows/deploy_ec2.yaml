@@ -16,7 +16,7 @@ jobs:
       runs-on: ubuntu-latest
 
       #TODO environment ajustar pelo nome da branch
-      environment: "prod" 
+      environment: "prod"
       outputs:
         image-uri: ${{ steps.login-ecr.outputs.registry }}
       steps:
