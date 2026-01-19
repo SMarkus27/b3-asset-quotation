@@ -3,7 +3,8 @@ name: Pipeline CI/CD
 on:
   push:
     branches:
-      - feature/quotation
+      - develop
+      - main
 
 permissions:
   id-token: write
@@ -13,7 +14,9 @@ jobs:
     build:
       name: build_ecr
       runs-on: ubuntu-latest
-#      environment: "prod"
+
+      #TODO environment ajustar pelo nome da branch
+      environment: "prod" 
       outputs:
         image-uri: ${{ steps.login-ecr.outputs.registry }}
       steps:
@@ -72,23 +75,17 @@ jobs:
           run: |
             echo "${{ secrets.INSTANCE_KEY }}" > key.pem
             chmod 400 key.pem
-            echo 1
             ssh -i key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_IP }} << EOF
               set -e
-            echo 2
     
               aws ecr get-login-password --region $AWS_REGION \
               | docker login --username AWS --password-stdin $ECR_REGISTRY
-            echo 3
     
               docker pull $ECR_REPO:dev
-            echo 4
     
               docker stop b3-assets || true
-            echo 5
             
               docker rm b3-assets || true
-            echo 6
     
               docker run -d \
                 -p 5000:5000 \
@@ -96,7 +93,6 @@ jobs:
                 --name b3-assets \
                 --env-file /etc/environment \
                 $ECR_REPO:dev
-            echo 7
             EOF
     
             rm -f key.pem
