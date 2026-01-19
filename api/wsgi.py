@@ -7,4 +7,4 @@ app = create_app(config_name)
 
 @app.route("/")
 def test():
-    return "Hello from there"
+    return "Hello there"
