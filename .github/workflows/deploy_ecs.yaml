@@ -104,11 +104,11 @@ jobs:
               task-definition: clean-task-def.json
               container-name: my-app
               image:  ${{ secrets.AWS_ECR_REPO }}:${{ github.sha }}
-              
+
           - name: Deploy ECS service
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
             with:
               task-definition: ${{ steps.render.outputs.task-definition }}
               service: my-app-service
-              cluster: terraform-cluster-ecs
+              cluster: Terraform-cluster-ecs
               wait-for-service-stability: true
