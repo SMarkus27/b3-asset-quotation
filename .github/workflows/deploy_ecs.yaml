@@ -103,8 +103,8 @@ jobs:
             with:
               task-definition: clean-task-def.json
               container-name: my-app
-              image: ${{ needs.build.outputs.image-uri }}
-
+              image:  ${{ secrets.AWS_ECR_REPO }}:${{ github.sha }}
+              
           - name: Deploy ECS service
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
             with:
